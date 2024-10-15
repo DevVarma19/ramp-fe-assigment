@@ -8,6 +8,7 @@ export function usePaginatedTransactions(): PaginatedTransactionsResult {
   const [paginatedTransactions, setPaginatedTransactions] = useState<PaginatedResponse<
     Transaction[]
   > | null>(null)
+  const [hasMore, setHasMore] = useState(true)
 
   const fetchAll = useCallback(async () => {
     const response = await fetchWithCache<PaginatedResponse<Transaction[]>, PaginatedRequestParams>(
@@ -17,18 +18,26 @@ export function usePaginatedTransactions(): PaginatedTransactionsResult {
       }
     )
 
+    if(response == null) {
+      setHasMore(false)
+      return
+    }
+
     setPaginatedTransactions((previousResponse) => {
       if (response === null || previousResponse === null) {
         return response
       }
 
-      return { data: response.data, nextPage: response.nextPage }
+      return { data: [...previousResponse.data, ...response.data], nextPage: response.nextPage }
     })
+
+    setHasMore(response.nextPage !== null)
   }, [fetchWithCache, paginatedTransactions])
 
   const invalidateData = useCallback(() => {
     setPaginatedTransactions(null)
+    setHasMore(true)
   }, [])
 
-  return { data: paginatedTransactions, loading, fetchAll, invalidateData }
+  return { data: paginatedTransactions, loading, fetchAll, invalidateData, hasMore }
 }

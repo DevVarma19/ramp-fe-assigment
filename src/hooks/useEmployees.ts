@@ -16,5 +16,5 @@ export function useEmployees(): EmployeeResult {
     setEmployees(null)
   }, [])
 
-  return { data: employees, loading, fetchAll, invalidateData }
+  return { data: employees, loading, fetchAll, invalidateData, hasMore: false }
 }

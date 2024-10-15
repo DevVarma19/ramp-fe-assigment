@@ -25,5 +25,5 @@ export function useTransactionsByEmployee(): TransactionsByEmployeeResult {
     setTransactionsByEmployee(null)
   }, [])
 
-  return { data: transactionsByEmployee, loading, fetchById, invalidateData }
+  return { data: transactionsByEmployee, loading, fetchById, invalidateData, hasMore: false }
 }
